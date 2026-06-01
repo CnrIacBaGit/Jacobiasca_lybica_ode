@@ -13,4 +13,4 @@ Scripts for generating plots of the sensitivity analysis with respect to adult i
 The routine has been implemented and developed by Angela Monti and Fasma Diele. It can be used under the conditions of CC-BY-NC 2.0
 
 A full description of the model is available in: Deborah Lacitignola, Angela Monti, Emanuele Gosamo, Giovanni Attolico, Massimiliano Nitti,
-Fasma Diele, Carmela Marangi, Stage-structured modeling of Jacobiasca lybica for vineyard early-warning (submitted, 2026)
+Fasma Diele, Carmela Marangi, Early Nymph Emergence Index (ENEI) for Jacobiasca lybica: An environmentally driven early-warning tool for vineyard risk assessment (submitted, 2026)
