@@ -2,9 +2,8 @@
 % Jacobiasca lybica Stage-Structured Model (per leaf)
 % ODE simulation + ENEI early-warning calibration
 %
-% Two thermal cases:
-%   1) Analytis:  f_T = (T-Tmin)*sqrt(Tmax-T)
-%   2) Briere:    f_T = T*(T-Tmin)*sqrt(Tmax-T)
+% Thermal case:
+%   Analytis:  f_T = (T-Tmin)*sqrt(Tmax-T)
 %
 % Main features:
 % - Feudo Arancio 2002 comparison using peak-based kA and kN
@@ -170,15 +169,11 @@ fsTitle = 14;
 fsLabel = 13;
 fsLegend = 11;
 
-%% 8. THERMAL RESPONSE FORMULATIONS
-% Both raw thermal functions are normalized by their maximum value before use.
+%% 8. THERMAL RESPONSE FORMULATION
+% The raw thermal function is normalized by its maximum value before use.
 cases(1).name  = "Analytis";
 cases(1).fTraw = @(T) fT_Analytis_raw(T, Tmin, Tmax);
 cases(1).Topt  = (2*Tmax + Tmin)/3;
-
-cases(2).name  = "Briere";
-cases(2).fTraw = @(T) fT_Briere_raw(T, Tmin, Tmax);
-cases(2).Topt  = briere_Topt_classic(Tmin, Tmax);
 
 %% 9. TABLE STORAGE
 % Tables are progressively filled inside the main loop.
@@ -271,7 +266,7 @@ for c = 1:numel(cases)
     plot_theta_vs_L(ThetaYear, thermoName, riskNames, lead_days, ...
         fsAxes, fsTitle, fsLabel, saveFigures, figFolder);
 
-    % Figure 8: operational ENEI warning vs nymph risk crossings (Analytis only)
+    % Figure 8: operational ENEI warning vs nymph risk crossings
     if thermoName == "Analytis"
         plot_warning_vs_risk_figure(CurvesTable, RollingDiag, thermoName, ...
             anno_cmp, selectedLeadForFigures, riskNames, riskVals, obs_tr_2002, ...
@@ -405,18 +400,18 @@ for ir = 1:nrk
     end
     yline(ref_T8(ir), ':', 'Color', cols(ir,:), 'LineWidth', 1.4, 'HandleVisibility','off');
     text(years_targ(end)+0.2, ref_T8(ir), ...
-        sprintf('$\\widehat{\\theta}_{\\mathrm{%s},2026;26}^{(%d)}$', ...
-                char(riskNames(ir)), selectedLeadForFigures), ...
-        'Color', cols(ir,:), 'FontSize', 10, 'VerticalAlignment','middle', ...
+        sprintf('$\\widehat{\\theta}_{\\mathrm{%s}}^{(21)}$', ...
+                char(riskNames(ir))), ...
+        'Color', cols(ir,:), 'FontSize', 11, 'VerticalAlignment','middle', ...
         'Interpreter','latex');
 end
 set(gca,'YScale','log','XTick',2002:2:2025)
 grid on
 xlabel('Year','FontSize',fsLabel)
-ylabel('$\widehat{\theta}^{(L=21)}_{r,y;\,W=2}$ (log scale)', ...
+ylabel('$\widehat{\theta}^{(21)}_{r,y;\,W=2}$ (log scale)', ...
     'FontSize',fsLabel,'Interpreter','latex')
-title(sprintf('Year-by-year operational ENEI thresholds vs. full-period reference (%s, L=%d d)', ...
-    char(formulation_movwin), selectedLeadForFigures),'FontSize',fsTitle)
+title('Year-by-year operational ENEI thresholds vs. full-period reference', ...
+    'FontSize',fsTitle)
 legend(hLines, 'Location','southeast','NumColumns',3,'FontSize',fsLegend)
 set(gca,'FontSize',fsAxes)
 hold off
@@ -450,8 +445,8 @@ yline(selectedLeadForFigures, 'k:', 'LineWidth', 1.2, ...
 grid on
 xlabel('Risk level','FontSize',fsLabel)
 ylabel('Realised lead time (days)','FontSize',fsLabel)
-title(sprintf('Distribution of realised lead times, 2002-2025 (%s, W=%d, L=%d)', ...
-    char(formulation_movwin), W_movwin, selectedLeadForFigures),'FontSize',fsTitle)
+title(sprintf('Distribution of realised lead times, 2002-2025 (W=%d, L=%d)', ...
+    W_movwin, selectedLeadForFigures),'FontSize',fsTitle)
 set(gca,'FontSize',fsAxes)
 hold off
 if saveFigures
@@ -461,8 +456,8 @@ if saveFigures
 end
 
 % Distributional stats and yearly table export
-fprintf('\n--- Realised lead distribution (%s, W=%d, L=%d) ---\n', ...
-    char(formulation_movwin), W_movwin, selectedLeadForFigures);
+fprintf('\n--- Realised lead distribution (W=%d, L=%d) ---\n', ...
+    W_movwin, selectedLeadForFigures);
 for ir = 1:nrk
     v = lead_W2(:,ir); v = v(isfinite(v));
     fprintf('  %-7s : median=%2d  IQR=[%2d,%2d]  range=[%2d,%2d]  mean=%4.1f +/- %3.1f\n', ...
@@ -506,12 +501,12 @@ end
 if saveTables
     writetable(T9, fullfile(tabFolder,'table09_theta_trend_W2.csv'));
 end
-fprintf('\n--- Table 9 (trend statistics of theta_W2, %s, L=%d) ---\n', ...
-    char(formulation_movwin), selectedLeadForFigures);
+fprintf('\n--- Table 9 (trend statistics of theta_W2, L=%d) ---\n', ...
+    selectedLeadForFigures);
 disp(T9)
 
 %% 15. DEGREE-DAY BENCHMARK VS ENEI USING OBSERVED 2002 RISK DATES
-% DD, Analytis-ENEI and Briere-ENEI are evaluated against the same observed t_r.
+% DD and Analytis-ENEI are evaluated against the same observed t_r.
 % Degree-day and ENEI rolling hindcast for the target year 2002.
 % The realised lead times are evaluated against interpolated observed
 % nymph-risk crossing dates, not against model-generated Nscaled crossings.
@@ -562,10 +557,8 @@ for iy = 1:numel(years_eval)
     end
 end
 
-% ENEI trajectories for the 2002 target season
+% ENEI trajectory for the 2002 target season
 C2002A = AllCurves(string(AllCurves.Thermal)=="Analytis" & ...
-                   AllCurves.Year==anno_cmp, :);
-C2002B = AllCurves(string(AllCurves.Thermal)=="Briere" & ...
                    AllCurves.Year==anno_cmp, :);
 
 T10 = table();
@@ -619,39 +612,13 @@ for ir = 1:nrk
             end
         end
 
-        % --- ENEI Briere branch ---
-        maskPrevB = ismember(AllThetaYear.Year, prevYears) & ...
-                    string(AllThetaYear.Thermal)=="Briere" & ...
-                    AllThetaYear.RiskLevel==riskNames(ir) & ...
-                    AllThetaYear.TargetLeadDays==L & ...
-                    AllThetaYear.ValidTheta;
-        prevThetaB = AllThetaYear.YearSpecificTheta(maskPrevB);
-        prevThetaB = prevThetaB(isfinite(prevThetaB));
-
-        if isempty(prevThetaB) || isempty(C2002B)
-            theta_hat_B = NaN; twarn_B = NaT; lead_B = NaN; err_B = NaN;
-        else
-            theta_hat_B = median(prevThetaB, 'omitnan');
-            idxW = find(C2002B.ENEI >= theta_hat_B, 1, 'first');
-            if isempty(idxW)
-                twarn_B = NaT; lead_B = NaN; err_B = NaN;
-            else
-                twarn_B = C2002B.Date(idxW);
-                lead_B  = days(tR_obs - twarn_B);
-                err_B   = lead_B - L;
-            end
-        end
-
         T10 = [T10; table(riskNames(ir), L, string(tR_obs), ...
             eta_hat, string(twarn_dd), lead_dd, err_dd, ...
             theta_hat_A, string(twarn_A), lead_A, err_A, ...
-            theta_hat_B, string(twarn_B), lead_B, err_B, ...
             'VariableNames', {'RiskLevel','L_days','ObservedRiskDate', ...
                               'DD_eta_hat','DD_t_warn','DD_RealizedLead','DD_LeadError', ...
                               'ENEI_Analytis_theta','ENEI_Analytis_t_warn', ...
-                              'ENEI_Analytis_Lead','ENEI_Analytis_LeadError', ...
-                              'ENEI_Briere_theta','ENEI_Briere_t_warn', ...
-                              'ENEI_Briere_Lead','ENEI_Briere_LeadError'})]; %#ok<AGROW>
+                              'ENEI_Analytis_Lead','ENEI_Analytis_LeadError'})]; %#ok<AGROW>
     end
 end
 
@@ -677,7 +644,7 @@ fprintf('Tables  saved in: %s\n', tabFolder);
 %   enei_calibration_LMH                ENEI thresholds and rolling hindcast
 %   plot_theta_vs_L                     calibration curves
 %   plot_warning_vs_risk_figure         operational warning figure
-%   fT_Analytis_raw / fT_Briere_raw     thermal response functions
+%   fT_Analytis_raw                     thermal response function
 %   disable_axes_toolbar                export helper
 
 % ------------------------------------------------------------------------
@@ -783,7 +750,7 @@ function [ValidationRow, kN] = validate_2002( ...
     grid on
     xlabel('Date','FontSize',fsLabel)
     ylabel('Nymphs per leaf','FontSize',fsLabel)
-    title(sprintf('%s: nymphs, %d', thermoChar, anno_cmp), 'FontSize',fsTitle)
+    title(sprintf('Nymphs, %d', anno_cmp), 'FontSize',fsTitle)
     legend('Location','best','FontSize',fsLegend)
     set(gca,'FontSize',fsAxes)
 
@@ -793,11 +760,11 @@ function [ValidationRow, kN] = validate_2002( ...
     grid on
     xlabel('Date','FontSize',fsLabel)
     ylabel('Adults per trap','FontSize',fsLabel)
-    title(sprintf('%s: adults, %d', thermoChar, anno_cmp), 'FontSize',fsTitle)
+    title(sprintf('Adults, %d', anno_cmp), 'FontSize',fsTitle)
     legend('Location','best','FontSize',fsLegend)
     set(gca,'FontSize',fsAxes)
 
-    title(tl, sprintf('Feudo Arancio %d validation (%s)', anno_cmp, thermoChar), 'FontSize', fsTitle)
+    title(tl, sprintf('Feudo Arancio %d validation', anno_cmp), 'FontSize', fsTitle)
 
     if saveFigures
         disable_axes_toolbar(fig);
@@ -868,7 +835,7 @@ function RegStats = plot_validation_regressions_2002( ...
     grid on
     xlabel('Observed data (Nymph)', 'FontSize', fsLabel)
     ylabel('Modelled data (Nymph)', 'FontSize', fsLabel)
-    title(sprintf('Feudo Arancio %d (%s): nymphs linear regression', anno_cmp, thermoChar), 'FontSize', fsTitle)
+    title(sprintf('Feudo Arancio %d: nymphs linear regression', anno_cmp), 'FontSize', fsTitle)
     legend([hData hFit hCI], 'Location','southeast', 'FontSize',fsLegend)
     set(gca,'FontSize',fsAxes)
     txtN = sprintf('R^2 = %.2f\np = %.3f\nAIC = %.1f', RegStats.R2_Nymphs, RegStats.p_Nymphs, RegStats.AIC_Nymphs);
@@ -883,14 +850,14 @@ function RegStats = plot_validation_regressions_2002( ...
     grid on
     xlabel('Observed data (Adult)', 'FontSize', fsLabel)
     ylabel('Modelled data (Adult)', 'FontSize', fsLabel)
-    title(sprintf('Feudo Arancio %d (%s): adults linear regression', anno_cmp, thermoChar), 'FontSize', fsTitle)
+    title(sprintf('Feudo Arancio %d: adults linear regression', anno_cmp), 'FontSize', fsTitle)
     legend([hData hFit hCI], 'Location','southeast', 'FontSize',fsLegend)
     set(gca,'FontSize',fsAxes)
     txtA = sprintf('R^2 = %.2f\np = %.3f\nAIC = %.1f', RegStats.R2_Adults, RegStats.p_Adults, RegStats.AIC_Adults);
     text(0.03, 0.95, txtA, 'Units','normalized', 'VerticalAlignment','top', ...
         'BackgroundColor','w', 'EdgeColor',[0.7 0.7 0.7], 'FontSize',fsAxes);
 
-    title(tl, sprintf('Linear regression analysis (%s)', thermoChar), 'FontSize', fsTitle)
+    title(tl, 'Linear regression analysis', 'FontSize', fsTitle)
 
     if saveFigures
         disable_axes_toolbar(fig);
@@ -1070,7 +1037,7 @@ function plot_theta_vs_L(ThetaYear, thermoName, riskNames, lead_days, ...
         title(sprintf('%s risk', char(riskNames(ir))),'FontSize',fsTitle)
         set(gca,'FontSize',fsAxes)
     end
-    title(tl, sprintf('%s: calibration curves', thermoChar),'FontSize',fsTitle)
+    title(tl, 'Calibration curves','FontSize',fsTitle)
 
     if saveFigures
         disable_axes_toolbar(fig);
@@ -1202,8 +1169,8 @@ function plot_warning_vs_risk_figure(CurvesTable, RollingDiag, thermoName, ...
     xlim([x0 x1])
     xlabel('Date','FontSize',fsLabel)
     ylabel('ENEI (log scale)','FontSize',fsLabel)
-    title(sprintf('%s: ENEI warning thresholds, %d, L=%d days', ...
-        thermoChar, anno_cmp, selectedLead), 'FontSize', fsTitle)
+    title(sprintf('ENEI warning thresholds, %d, L=%d days', ...
+        anno_cmp, selectedLead), 'FontSize', fsTitle)
     legend('Location','northwest','FontSize',fsLegend,'Interpreter','latex')
     set(gca,'FontSize',fsAxes,'YScale','log')
 
@@ -1330,8 +1297,8 @@ function plot_warning_vs_risk_figure(CurvesTable, RollingDiag, thermoName, ...
     % =====================================================================
     % Overall title
     % =====================================================================
-    title(tl, sprintf('%s: ENEI warning states versus observed nymph-based risk crossings (%d, L=%d)', ...
-        thermoChar, anno_cmp, selectedLead), 'FontSize', fsTitle+1);
+    title(tl, sprintf('ENEI warning states versus observed nymph-based risk crossings (%d, L=%d)', ...
+        anno_cmp, selectedLead), 'FontSize', fsTitle+1);
 
     % ===================== Save ==========================================
     if saveFigures
@@ -1357,19 +1324,6 @@ function f = fT_Analytis_raw(T, Tmin, Tmax)
 end
 
 % ------------------------------------------------------------------------
-function f = fT_Briere_raw(T, Tmin, Tmax)
-    if T <= Tmin || T >= Tmax
-        f = 0;
-    else
-        f = T * (T - Tmin) * sqrt(max(Tmax - T, 0));
-    end
-end
-
-% ------------------------------------------------------------------------
-function Topt = briere_Topt_classic(Tmin, Tmax)
-    Topt = (4*Tmax + 3*Tmin + sqrt(16*Tmax^2 - 16*Tmax*Tmin + 9*Tmin^2)) / 10;
-end
-% ------------------------------------------------------------------------
 function disable_axes_toolbar(fig)
     % Avoid exporting the interactive axes toolbar in saved figures.
     try
@@ -1383,4 +1337,3 @@ function disable_axes_toolbar(fig)
     catch
     end
 end
-
