@@ -43,7 +43,7 @@ betaH_A  = 0.002;      % [d^-1 %^-1]
 Tmin       = 11.0;     % [°C] 
 Tmax       = 35.0;     % [°C] 
 Tmin_spost = 22;       % [°C] Tmove
-Topt = (4*Tmax + 3*Tmin + sqrt(16*Tmax^2 - 16*Tmax*Tmin + 9*Tmin^2))/10; % Briere 
+Topt       = (2*Tmax+Tmin)/3;     % [°C]
 % Humidity
 cH   = 0.08;           % [adim per %] 
 H0   = 60.0;           % [%] 
@@ -56,7 +56,7 @@ KW_half    = 3.0;      % [m s^-1]
 alphaW_dev = 0.10;     % [adim]
 
 %% Response function
-% f_T(T): Briere normalized with respect to the maximum value in the reference year
+% f_T(T): Analytis normalized with respect to the maximum value in the reference year
 baseDate  = datetime(2000,1,1);    
 offsetDays = days(startDate - baseDate);
 idxStart = offsetDays + 1;
@@ -80,8 +80,8 @@ for i = 1:ngiorni
     ftval(i) = fT(T,Tmin,Tmax);
 end
 ftmax      = max(ftval);
-a_briere   = 1/ftmax;                  
-ftval_norm = a_briere .* ftval;        % normalization
+a_max   = 1/ftmax;                  
+ftval_norm = a_max .* ftval;        % normalization
 
 % f_H(H)
 fH = @(H) 1.0 ./ (1.0 + exp(-cH*(H - H0)));
@@ -131,7 +131,7 @@ for j = 1:nt-1
         A(j) = A(j) + A_intro;
         adults_introduced_this_year = true;
     end
-    ftvalt = a_briere .*fT(T,Tmin,Tmax);
+    ftvalt = a_max .*fT(T,Tmin,Tmax);
     beta  = beta_max*ftvalt*fH(H)*fR(R);
     gammaE = gammaE_max*ftvalt*fH(H)*fR(R);
     muE = muE_min + alphaT_E*abs(T - Topt) + alphaH_E*abs(H - Hopt);
@@ -165,12 +165,12 @@ grid on
 legend('s_E','s_N','s_A','Location','best')
 set(gca, 'FontSize', 14, 'FontWeight', 'bold')
 
-% Function Briere
-% f_T = (T - Tmin) * sqrt(Tmax - T), if Tmin < T < Tmax; 0 otherwise
+% Function Analytis
 function fT_raw = fT(T,Tmin,Tmax)
+% f_T = (T - Tmin) * sqrt(Tmax - T), per Tmin < T < Tmax; 0 otherwise.
 if T <= Tmin || T >= Tmax
     fT_raw = 0.0;
 else
-    fT_raw = T*(T - Tmin)*sqrt(max(Tmax - T, 0));
+    fT_raw = (T - Tmin)*sqrt(max(Tmax - T, 0));
 end
 end
