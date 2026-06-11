@@ -1,6 +1,6 @@
 % Jacobiasca lybica Stage-Structured Model
 % Sensitivity Analysis to temperature Tbar
-
+% Analytis
 clc
 clear all
 close all
@@ -42,7 +42,7 @@ betaH_A  = 0.002;      % [d^-1 %^-1]
 Tmin       = 11.0;     % [°C] 
 Tmax       = 35.0;     % [°C] 
 Tmin_spost = 22;       % [°C] Tmove
-Topt = (4*Tmax + 3*Tmin + sqrt(16*Tmax^2 - 16*Tmax*Tmin + 9*Tmin^2))/10; % Briere 
+Topt       = (2*Tmax+Tmin)/3;     % [°C] ottimo sopravvivenza
 % Humidity
 cH   = 0.08;           % [adim per %] 
 H0   = 60.0;           % [%] 
@@ -55,7 +55,7 @@ KW_half    = 3.0;      % [m s^-1]
 alphaW_dev = 0.10;     % [adim]
 
 %% Response function
-% f_T(T): Briere normalized with respect to the maximum value in the reference year
+% f_T(T): Analytis normalized with respect to the maximum value in the reference year
 baseDate  = datetime(2000,1,1);    
 offsetDays = days(startDate - baseDate);
 idxStart = offsetDays + 1;
@@ -79,8 +79,8 @@ for i = 1:ngiorni
     ftval(i) = fT(T,Tmin,Tmax);
 end
 ftmax      = max(ftval);
-a_briere   = 1/ftmax;                  
-ftval_norm = a_briere .* ftval;        % normalization
+a_max   = 1/ftmax;                  
+ftval_norm = a_max .* ftval;        % normalization
 
 % f_H(H)
 fH = @(H) 1.0 ./ (1.0 + exp(-cH*(H - H0)));
@@ -110,7 +110,7 @@ dates = dates(trova);
 
 % Fixed parameter Tbar
 T = mean(T_year(trova)); 
-ftvalt = a_briere .*fT(T,Tmin,Tmax);
+ftvalt = a_max .*fT(T,Tmin,Tmax);
 dftval = dfT(T,Tmin,Tmax,ftmax);
 dmuE = alphaT_E*sign(T-Topt);
 dmuN = alphaT_N*sign(T - Topt);
@@ -172,22 +172,22 @@ grid on
 legend('s_{E,T}','s_{N,T}','s_{A,T}','Location','best')
 set(gca, 'FontSize', 14, 'FontWeight', 'bold')
 
-% Function Briere
-% f_T = (T - Tmin) * sqrt(Tmax - T), if Tmin < T < Tmax; 0 otherwise
+% Function Analytis
 function fT_raw = fT(T,Tmin,Tmax)
+% f_T = (T - Tmin) * sqrt(Tmax - T), per Tmin < T < Tmax; 0 otherwise.
 if T <= Tmin || T >= Tmax
     fT_raw = 0.0;
 else
-    fT_raw = T*(T - Tmin)*sqrt(max(Tmax - T, 0));
+    fT_raw = (T - Tmin)*sqrt(max(Tmax - T, 0));
 end
 end
-
-% Derivative of fT Briere
+% Derivative 
 function dfT_raw = dfT(T,Tmin,Tmax,fmax)
 if T <= Tmin || T >= Tmax
     dfT_raw = 0.0;
 else
-    dfT_raw = ( (2*T-Tmin)*sqrt(max(Tmax - T, 0)) - T*(T-Tmin)/(2*sqrt(max(Tmax - T, 0))) )/fmax;
+    dfT_raw = ( sqrt(max(Tmax - T, 0)) - (T-Tmin)/(2*sqrt(max(Tmax - T, 0))) )/fmax;
 end
 end
+
 
