@@ -2,16 +2,7 @@ function p = apply_parameter_scenario(p0, paramName, value, Tvec)
 % APPLY_PARAMETER_SCENARIO  Return a copy of p0 with paramName set to value,
 % applying all coupling rules encoded in the interval table.
 %
-% Coupling rules:
-%   - T_min or T_max changed -> recompute T_opt = (2*T_max + T_min)/3 AND
-%     recompute the observed-max Analytis normalization p.fT_norm over the
-%     full record Tvec (the normalization depends on the thresholds and the
-%     data, exactly as in the original solver). Tvec MUST be supplied when
-%     perturbing a thermal threshold.
-%   - H_m changed -> same field used in f_H and the |H-H_m| stress terms, so
-%     a single assignment propagates correctly.
-%   - T_move changed -> biofix recomputed downstream in the simulator.
-%   - T_opt -> never set independently.
+
 
 if strcmp(paramName,'T_opt')
     error("apply_parameter_scenario:toptIndependent", ...
