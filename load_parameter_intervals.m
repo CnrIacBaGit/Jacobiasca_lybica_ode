@@ -1,7 +1,5 @@
 function T = load_parameter_intervals(csvPath)
-% LOAD_PARAMETER_INTERVALS  Read the single-source interval table and
-% validate its invariants. The CSV is the authoritative source; no numeric
-% values are duplicated in the scripts.
+% LOAD_PARAMETER_INTERVALS  Read the interval table
 
 if nargin < 1
     csvPath = "ENEI_parameter_intervals_updated.csv";
@@ -16,7 +14,7 @@ if ~isempty(missing)
           "CSV missing required columns: %s", strjoin(missing, ", "));
 end
 
-% expected parameter set (T_opt is derived, still listed)
+
 expected = ["T_min","T_max","T_opt","beta_max","mu_E_min","mu_N_min", ...
     "mu_A_min","gamma_E_max","gamma_N_max","A_intro","T_move", ...
     "alpha_T","alpha_H","delta_T","delta_H","beta_T","beta_H", ...
@@ -40,7 +38,7 @@ for i = 1:height(T)
     hi  = todouble(T.upper(i));
 
     if pid == "T_opt"
-        % derived: must have NO bounds and must not be independently varied
+       
         if ~isnan(lo) || ~isnan(hi)
             error("load_parameter_intervals:toptBounds", ...
                   "T_opt must have empty lower/upper (it is derived).");
