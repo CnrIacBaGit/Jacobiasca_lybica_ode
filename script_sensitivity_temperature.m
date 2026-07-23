@@ -1,13 +1,7 @@
 function script_sensitivity_temperature(csvPath, matPath)
 % SCRIPT_SENSITIVITY_TEMPERATURE  sensitivity to the mean temperature (\\bar{T}).
 %
-% This script no longer contains the model equations or any parameter value.
-% The state is advanced by ENEI_RHS, the shared routine used by the
-% sensitivity, elasticity and robustness analyses, and the variational system
-% is built on the rates ENEI_RHS returns (see enei_sensitivity.m). The main
-% simulation reads from the same parameter table and uses algebraically
-% identical rates. The wind contribution is visible immediately before the
-% state update (r.muN contains k_W*f_W; r.gammaN contains g_W).
+
 
 if nargin < 1 || isempty(csvPath), csvPath = 'ENEI_parameter_intervals_updated.csv'; end
 if nargin < 2 || isempty(matPath), matPath = 'Arancio_dati_2000_2025.mat'; end
