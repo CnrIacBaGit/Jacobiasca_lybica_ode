@@ -1,13 +1,4 @@
 function P = JL_load_parameters(csvPath)
-% JL_LOAD_PARAMETERS  Deprecated compatibility bridge for older scripts.
-%
-% The current main solver no longer calls this function: it uses
-% load_parameter_intervals + build_nominal_parameters and evaluates enei_rhs
-% directly. This bridge is retained only so older local scripts that expect
-% legacy variable names can still read the same authoritative CSV without
-% hard-coded numerical values.
-%
-% New analyses should use the native parameter structure instead.
 
 if nargin < 1 || isempty(csvPath)
     csvPath = 'ENEI_parameter_intervals_updated.csv';
@@ -28,9 +19,7 @@ MAP = { ...
     'T_move',{'Tmin_spost'}; 'H_m',{'H0','Hopt'};          'c_H',{'cH'}; ...
     'c_R',{'cR'};            'R_m',{'R0'};                 'K_W',{'KW_half'}; ...
     'alpha_W',{'alphaW_dev'};'A_intro',{'A_intro'} };
-% H_m -> H0 AND Hopt: one CSV parameter, two legacy variables. Assigning both
-% from the same source makes it impossible to perturb one without the other,
-% which is the coupling rule the CSV states and the manuscript relies on.
+
 
 P = struct();
 for i = 1:size(MAP,1)
