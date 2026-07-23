@@ -1,18 +1,6 @@
 function R = run_range_robustness_B(T, p0, forcing, obs2002, L, W, indicatorName)
 % RUN_RANGE_ROBUSTNESS_B  PRIMARY robustness analysis (Protocol B: fixed
-% nominal thresholds). The operational ENEI thresholds are calibrated ONCE
-% on the nominal model; they are then held fixed while each parameter is
-% perturbed to low/high, and only the 2002 target trajectory changes. The
-% shift in realised lead time (in days) relative to the nominal run isolates
-% the sensitivity of the warning TIMING to each parameter, without the
-% recalibration noise that dominates the end-to-end Protocol A at small W.
-%
-% Rationale: at W=2 the moving-window recalibration (Protocol A) is driven by
-% the median of only two preceding seasons, so a perturbation that drops one
-% year's crossing produces a large discontinuous threshold jump. That is a
-% property of the calibration window, not of the model's warning sensitivity.
-% Protocol B removes that confound and is therefore the primary measure;
-% Protocol A is reported separately as a calibration-stability diagnostic.
+% nominal thresholds). 
 %
 % INPUTS as in run_range_robustness, but L and W are scalars (main setting
 % L=21, W=2). indicatorName: 'ENEI' or 'DD'.
@@ -23,7 +11,7 @@ function R = run_range_robustness_B(T, p0, forcing, obs2002, L, W, indicatorName
 riskLevels = {'low','med','high'};
 scnNames   = {'low','central','high'};
 
-% ---- 1. nominal fixed thresholds, calibrated once (same pipeline as main) ----
+% ---- 1. nominal fixed thresholds, calibrated once  ----
 yrNom = build_year_results(p0, forcing, obs2002, indicatorName);
 thetaFix = struct();
 for ir = 1:numel(riskLevels)
