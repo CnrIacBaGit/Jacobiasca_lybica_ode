@@ -1,8 +1,7 @@
 function [dstate, rates] = enei_rhs(state, T, H, R, W, p)
 % ENEI_RHS  Single shared right-hand side of the stage-structured model
 % (Eq. 1), used by the main simulation, time-resolved sensitivities, endpoint
-% elasticities and finite-range robustness analyses. Centralizing every
-% biological and environmental rate here prevents parameter or term divergence.
+% elasticities and finite-range robustness analyses. 
 %
 % INPUTS
 %   state : [E; N; A]  (A = TOTAL adult density. Oviposition uses the
@@ -14,7 +13,7 @@ function [dstate, rates] = enei_rhs(state, T, H, R, W, p)
 % OUTPUTS
 %   dstate : [dE; dN; dA]  time derivatives (per day)
 %   rates  : struct of the effective rates actually used, exposed so the
-%            variational/sensitivity system uses EXACTLY the same numbers.
+%            variational/sensitivity system uses  the same numbers.
 
 E = state(1); N = state(2); A = state(3);
 
@@ -32,7 +31,7 @@ if sw_fR, fR = 1./(1+exp(-p.c_R*(R - p.R_m))); else, fR = 1; end
 if sw_gW, gW = 1./(1 + p.alpha_W*W);           else, gW = 1; end
 if sw_fW, fW = W./(W + p.K_W);                 else, fW = 0; end
 
-% --- effective rates (wind made explicit BEFORE the update) ---
+% --- effective rates (wind made explicit) ---
 beta       = p.beta_max   * fT * fH * fR;
 gammaE_eff = p.gamma_E_max* fT * fH * fR;
 
