@@ -1,14 +1,8 @@
 function make_figure_R22(csvPath, matPath, outFile)
-% MAKE_FIGURE_R22  Generate the stage-specific trajectory figure requested by
-% Reviewer 2 (comment R2.2): simulated E(t), N(t), A(t) and the resulting ENEI
-% signal under the low / nominal / high settings of the parameters the Reviewer
-% singled out -- the stage-specific baseline mortalities (Table 2) and the
-% maximum egg-hatching and nymph-development rates (Table 3).
-%
-% The figure is what makes the answer to R2.3 visible: for the mortalities the
-% amplitude of the curves changes while the ENEI warning date barely moves,
-% whereas for gamma_E,max and gamma_N,max the warning date itself shifts.
-%
+% MAKE_FIGURE_R22  Generate the stage-specific trajectory 
+% figure: simulated E(t), N(t), A(t) and the resulting ENEI
+
+
 % USAGE
 %   make_figure_R22                                  % uses defaults
 %   make_figure_R22(csv, mat, 'fig_R22.png')
@@ -32,12 +26,12 @@ idx2002 = year(F.dates)==2002;
 F2002 = struct('T',F.T(idx2002),'H',F.H(idx2002),'R',F.R(idx2002), ...
                'W',F.W(idx2002),'dates',F.dates(idx2002),'year',2002);
 
-% ---- the five parameters raised by Reviewer 2 ----
+% ---- the five parameters ----
 params = {'mu_E_min','mu_N_min','mu_A_min','gamma_E_max','gamma_N_max'};
 labels = {'\mu_{E,min}','\mu_{N,min}','\mu_{A,min}','\gamma_{E,max}','\gamma_{N,max}'};
 
 % nominal fixed ENEI threshold (low-risk, L=21) to mark the warning date;
-% this is the calibrated operational threshold reported in the manuscript.
+
 theta_low = 18.60;
 
 nP = numel(params);
@@ -76,7 +70,7 @@ for i = 1:nP
         set(gca,'FontSize',8);
     end
 
-    % --- ENEI + warning dates: this is the panel that answers R2.3 ---
+    % --- ENEI + warning date
     subplot(nP,4,(i-1)*4+4); hold on; box on
     for s = 1:3
         plot(S{s}.dates, S{s}.ENEI, styles{s}, 'Color', cols(s,:), 'LineWidth',1.4);
