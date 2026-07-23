@@ -1,15 +1,6 @@
 function IC = run_interaction_checks(p0, forcing)
-% RUN_INTERACTION_CHECKS  Targeted checks for the confounded early-phase
-% quantities under the effective-rate formulation (beta_eff is used directly
-% with A = total adults).
-%
-% (1) beta_eff x A_intro grid. Only the PRODUCT beta_eff*A_intro drives early
-%     oviposition, so this maps the identifiable combination and shows that
-%     the two factors trade off along product isolines.
-%
-% (2) T_move x A_intro grid: Mazzoni et al. place first species-specific trap
-%     detection in early July while the nominal biofix is 14 June, so the
-%     immigration date and pulse size interact through the seeding instant.
+% RUN_INTERACTION_CHECKS 
+
 
 IC = struct();
 
