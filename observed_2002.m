@@ -1,12 +1,8 @@
 function O = observed_2002()
-% OBSERVED_2002  Field data for the 2002 Feudo Arancio season, taken from the
-% original solver (script_solve_ode_Arancio.m). Nymph counts are COMMUNITY-
-% LEVEL (whole leafhopper community, not exclusively J. lybica) -- every use
-% of these crossings must carry that caveat. Adults are trap counts.
+% OBSERVED_2002  Field data for the 2002 Feudo Arancio season
 %
 % Risk thresholds (nymphs/leaf): low 0.5, medium 1.0, high 2.0.
-% Returns observed nymph-risk crossing dates by linear interpolation of the
-% bi-weekly community nymph series.
+% Returns observed nymph-risk crossing dates 
 
 O = struct();
 O.riskNames = ["low","med","high"];
