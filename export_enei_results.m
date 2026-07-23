@@ -1,7 +1,6 @@
 function export_enei_results(outDir, elast, interactions, rangeRob)
-% EXPORT_ENEI_RESULTS  Write analysis outputs to disk for the manuscript.
-% Elasticities and day-valued robustness are exported SEPARATELY so the two
-% are never conflated in the paper.
+% EXPORT_ENEI_RESULTS  Write analysis outputs to disk.
+
 
 if ~exist(outDir,'dir'), mkdir(outDir); end
 
@@ -21,10 +20,7 @@ end
 if nargin >= 4 && ~isempty(rangeRob)
     save(fullfile(outDir,'range_robustness.mat'), '-struct', 'rangeRob');
 
-    % The .mat alone is not enough: Table (range robustness) in the manuscript
-    % is built from the PROTOCOL B rows. Previously these CSVs had to be
-    % exported by hand, which broke the chain from code to published table --
-    % a reader cloning the repo could not regenerate them. Write them here.
+  
     write_protocol_csv(outDir, 'range_robustness_protocolB.csv', ...
                        rangeRob, 'protocolB_primary');
     write_protocol_csv(outDir, 'range_robustness_protocolA.csv', ...
