@@ -1,14 +1,11 @@
 function ind = compute_indicator(indicatorName, p, forcingYear)
 % COMPUTE_INDICATOR  Return the cumulative indicator trajectory for one year
-% on its OWN absolute scale. All three indicators share the same biofix,
-% annual reset, A_intro and target events; only the accumulated
-% quantity differs. Thresholds are later calibrated per indicator on these
-% native scales (never relative, never cross-scaled).
+% on its own absolute scale. 
 %
 %   'ENEI'      : full multi-driver ENEI (Eq. 8) via simulate_enei_model.
 %   'DD'        : cumulative degree-days above T_min, capped at T_max,
-%                 from the same biofix (Appendix B).
-%
+%                 
+
 % OUTPUT ind: struct with .dates and .value (cumulative), plus .biofix.
 
 switch indicatorName
