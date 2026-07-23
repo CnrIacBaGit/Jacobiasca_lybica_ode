@@ -1,18 +1,12 @@
 function E = run_local_elasticities(T, p0, forcing, Tvec)
-% Tvec: full-record temperature series, needed to recompute the observed-max
-% thermal normalization when T_min/T_max are perturbed.
+
 % RUN_LOCAL_ELASTICITIES  Normalized local elasticities of continuous
 % endpoints for every independently-varied parameter.
 %
 %   Standard positive parameters: central-difference elasticity
 %       E_p^Q = [Q(p(1+eps)) - Q(p(1-eps))] / (2*eps*Q(p)),  eps = 0.01
 %
-%   Thermal-location parameters (T_min, T_max): SEMI-elasticity per +1 degC,
-%       reported as dQ per 1 C, using a central difference with h = 0.5 C
-%       (percent elasticity is meaningless on the Celsius scale).
-%
-%   Excluded from elasticity: T_opt (derived), T_move (discrete biofix ->
-%       scenario-only, handled elsewhere).
+
 
 eps = 0.01;
 hC  = 0.5;   % Celsius half-step for thermal thresholds
@@ -60,8 +54,7 @@ end
 E = cell2table(rows, 'VariableNames', ...
     {'parameter','endpoint','mode','value','Q_nominal'});
 
-% beta_max is the effective per-total-adult coefficient beta_eff; no separate
-% female-fraction parameter is introduced.
+
 E.note = repmat("", height(E), 1);
 E.note(E.parameter=="beta_max") = ...
     "effective per-adult rate (beta_eff = per-female fecundity x female fraction)";
