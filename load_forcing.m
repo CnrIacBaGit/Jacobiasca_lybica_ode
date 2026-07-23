@@ -1,9 +1,7 @@
 function F = load_forcing(matPath)
-% LOAD_FORCING  Load the 2000-2025 daily environmental forcing and clean
-% sentinel values. The distributed archive spans 1 Jan 2000 to 1 Dec 2025
-% (9467 daily records) and has been cleaned. The conversion/interpolation
-% below is retained as a defensive safeguard for replacement NASA POWER files
-% that may still contain the standard -999 missing-data code.
+% LOAD_FORCING  Load the 2000-2025 daily environmental forcing.
+% The distributed archive spans 1 Jan 2000 to 1 Dec 2025
+
 %
 % OUTPUT F: struct with
 %   .dates (datetime vector, day-resolution, starting 2000-01-01)
