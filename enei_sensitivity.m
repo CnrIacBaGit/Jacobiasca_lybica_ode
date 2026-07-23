@@ -8,33 +8,14 @@ function S = enei_sensitivity(mode, p, forcing)
 %   p    : parameter struct from build_nominal_parameters + set_fT_normalization
 %   forcing : struct .T .H .R .W .dates (one year)
 %
-% WHY THIS FILE EXISTS
-% --------------------
-% The five original script_sensitivity_*.m files each re-implemented the
-% population equations and re-declared every parameter locally. The audit
-% found four stale parameter values relative to the tabulated main model:
-% gamma_E_max 0.22, gamma_N_max 0.10, mu_N_min 0.04 and beta_T 0.015.
-% The former scripts also normalized f_T on the target-year window, but a
-% numerical reconstruction showed that this produced the same maximum as the
-% full-record normalization for the present data and did not contribute to the
-% sensitivity discrepancy.
-%
-% Here the STATE is advanced by enei_rhs -- the same routine used by the main
-% simulation, elasticity and range analyses -- and the variational system is
-% effective rates that enei_rhs returns. No equation and no parameter is
-% duplicated, so a divergence of this kind cannot recur.
-%
-% The parameter derivatives below are the ONLY quantities specific to this
-% file: they are the analytical d(rate)/dc terms of Eq. (A.2)-(A.5), and they
-% are evaluated on exactly the rates enei_rhs just produced.
+
 
 mode = validatestring(mode, {'aintro','T','H','R','W'});
 
 T = forcing.T(:); H = forcing.H(:); R = forcing.R(:); W = forcing.W(:);
 dates = forcing.dates(:);
 
-% active window: from the biofix (first day T >= T_move) to the end of the
-% permissive season, exactly as the original scripts defined `trova`.
+
 i0 = find(T >= p.T_move, 1, 'first');
 if isempty(i0)
     error('enei_sensitivity:noBiofix','No day with T >= T_move = %.3g.', p.T_move);
