@@ -1,10 +1,5 @@
 function R = run_range_robustness(T, p0, forcing, obs2002, horizons, windowLength, indicatorName)
-% Uses forcing.T as the full-record Tvec for thermal-normalization recompute.
-% RUN_RANGE_ROBUSTNESS  Low/central/high robustness of the WARNING FUNCTION
-% (Protocol A, end-to-end), reported in days, for every independently-varied
-% parameter. For each scenario the parameter is perturbed in BOTH calibration
-% years and 2002, thresholds are recalibrated, and warning dates are scored
-% against the OBSERVED 2002 community-level crossings.
+
 %
 % T             : interval table (from load_parameter_intervals)
 % p0            : nominal parameter struct
@@ -36,20 +31,17 @@ for i = 1:height(T)
     nomVal = p0.(pid);
     scnVals = [lo, nomVal, hi];
 
-    % NOTE: T_move gets scenarios only (handled the same way here, but no
-    % elasticity is ever computed for it elsewhere).
+   
 
     for s = 1:3
         p = apply_parameter_scenario(p0, pid, scnVals(s), forcing.T);   % coupling rules + fT_norm recompute
 
-        % --- 2002 continuous endpoints (state-based: always from the full
-        %     model, independent of which indicator is being scored) ---
+        % --- 2002 continuous endpoints 
         F2002 = year_forcing(forcing, 2002);
         sim = simulate_enei_model(p, F2002);
         Q = compute_continuous_endpoints(sim);
 
-        % --- indicator trajectory used for WARNING detection (full ENEI,
-        %     temperature-only ablation, or degree-days) ---
+        % --- indicator trajectory used for WARNING detection
         indTraj = compute_indicator(indicatorName, p, F2002);
 
         % recalibrate per risk on this scenario (Protocol A) and score vs observed
