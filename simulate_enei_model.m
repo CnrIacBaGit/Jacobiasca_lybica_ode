@@ -1,10 +1,6 @@
 function out = simulate_enei_model(p, forcing, opts)
 % SIMULATE_ENEI_MODEL  Integrate the stage-structured model via enei_rhs.
-% Within the auxiliary analysis pipeline, the equations live in enei_rhs and
-% this routine only marches Euler and accumulates ENEI. Temperature-only runs
-% are obtained by passing a struct
-% built with make_temperature_only(p) as p -- no branches here, no second
-% copy of the model.
+
 %
 % INPUTS
 %   p       : parameter struct (single source). A = TOTAL adults; oviposition
