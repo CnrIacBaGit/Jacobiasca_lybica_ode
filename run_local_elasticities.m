@@ -9,7 +9,7 @@ function E = run_local_elasticities(T, p0, forcing, Tvec)
 
 
 eps = 0.01;
-hC  = 0.5;   % Celsius half-step for thermal thresholds
+hC  = 0.5;   
 
 endpoints = {'ENEI_1Aug','Nmax'};
 thermalSemi = {'T_min','T_max'};
