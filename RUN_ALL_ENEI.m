@@ -4,7 +4,7 @@
 % verifies all required project files and inputs, then regenerates:
 %   1) main manuscript figures/tables;
 %   2) endpoint elasticities and range robustness outputs;
-%   3) the Reviewer-2 low/nominal/high trajectory figure;
+%   3) the  low/nominal/high trajectory figure;
 %   4) the five Appendix-A sensitivity figures.
 %
 % PRINCIPAL MODEL FILE: script_solve_ode_Arancio.m
